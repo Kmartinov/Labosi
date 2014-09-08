@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<?php
+session_start();
+
+if (!isset($_SESSION['user'])) {
+	header("Location:login.html");
+}
+
+?> 
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>ZKD j.d.o.o.</title>
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/grid.css" />
+		<link rel="stylesheet" href="css/normalize.css" />
+	</head>
+	<body>
+		<header>
+			<img class="logo" src="img/logo.png" alt="Zdravko Dren logo">
+			<div class="button_odjava">
+				<label><span class="label_color"><?php echo $_SESSION['user']; ?></span></label>
+						<a href="logout.php"><button>ODJAVA</button></a>
+			</div>
+			</header>
+					<nav>
+			<ul class="menu">
+				<li><a href="index.html">Početna</a></li>
+				<li><a href="indexpopis.html">Popis</a></li>
+				<li><a href="indexunos.html">Unos</a></li>
+				<li><a href="trazi.html">isp</a></li>
+				<li><a href="isp2.html">Pacijenti PHP</a></li>
+				<li><a href="isp3.html">Pacijenti JS</a></li>
+				<li><a href="forma.html">PDF</a></li>
+				<li><a href="indexunosmobile.html">Unos mobile</a></li>
+			</ul>
+		</nav>
+		<div class="content">
+			 <?php 
+
+			 $con=mysqli_connect("localhost","root","","data");
+                    if (mysqli_connect_errno())
+                      {
+                    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+                         }
+						 						 
+					    mysqli_query($con,"SET NAMES 'utf8'");
+					    mysqli_query($con,"SET CHARACTER_SET 'utf8'");
+
+					 $json = array();
+					    $result = mysqli_query($con,"SELECT * FROM podaci");
+
+					  while($row = mysqli_fetch_array($result))
+					   { 
+								$pol = array(
+								'ime' => $row['ime'],
+								'prezime' => $row['prezime'],
+								'spol' => $row['spol']
+							  );
+							array_push($json, $pol);
+						}
+						$jsonstring = json_encode($json);											
+					  $arrson = json_decode($jsonstring,true);
+
+			echo "<form action=\"isp2.html\" method=\"GET\">";
+			echo	"<input type=\"submit\" name=\"back\" value=\"Back\">";
+			echo	"<input type=\"submit\" name=\"forward\" value=\"Forward\">";
+			echo "</form>";
+			 
+
+			if (isset($_GET['back'])) {
+				$_SESSION['counter']--;
+			}
+			elseif (isset($_GET['forward'])) {
+				$_SESSION['counter']++;
+			}
+			else {
+				$_SESSION['counter']=0;
+			}
+
+
+
+			if($_SESSION['counter'] >= 0)	{
+				$array = $arrson[$_SESSION['counter']];
+				$firstname = $array['ime'];
+				$lastname = $array['prezime'];
+				echo $firstname . ' ';
+				echo $lastname . '<br/>';			
+			}
+			elseif ($_SESSION['counter'] <0) {
+				echo "Nije moguć ispis rezultata s indeksom manjim on 0!";
+			}
+			
+			
+			?>
+			
+		</div>
+		<footer>
+			<span class="footer_text">COPYRIGHT ZKD, 2014</span>
+		</footer>
+	</body>
+</html>

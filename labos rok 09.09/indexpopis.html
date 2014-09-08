@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<?php
+session_start();
+
+if (!isset($_SESSION['user'])) {
+	header("Location:login.html");
+}
+?> 
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>ZKD j.d.o.o.</title>
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/grid.css" />
+		<link rel="stylesheet" href="css/normalize.css" />
+	</head>
+	<body>
+		<header>
+			<img class="logo" src="img/logo.png" alt="Zdravko Dren logo">
+			<div class="button_odjava">
+				<label><span class="label_color"><?php echo $_SESSION['user']; ?></span></label>
+						<a href="logout.php"><button>ODJAVA</button></a>
+			</div>
+			</header>
+					<nav>
+			<ul class="menu">
+				<li><a href="index.html">Početna</a></li>
+				<li><a href="indexpopis.html">Popis</a></li>
+				<li><a href="indexunos.html">Unos</a></li>
+				<li><a href="trazi.html">isp</a></li>
+				<li><a href="isp2.html">Pacijenti PHP</a></li>
+				<li><a href="isp3.html">Pacijenti JS</a></li>
+				<li><a href="forma.html">PDF</a></li>
+				<li><a href="indexunosmobile.html">Unos mobile</a></li>
+			</ul>
+		</nav>
+		<div class="content">
+		<div class="content_info">
+			<form method="post" action="indexpopis.html">
+				Traži: <input type="text" name="filter">
+				&nbsp;&nbsp;&nbsp;Filtriraj po: <select name="filterId">
+				<option value="1" name="ime">Ime</option>
+				<option value="2" name="prezime">Prezime</option>
+				<option value="3" name="spol">Spol</option>
+				<option value="4" name="datum">Datum rođenja</option>
+				<option value="5" name="mob">Mobitel</option>
+				<option value="6" name="adresa">Adresa</option>
+				<option value="7" name="grad">Grad</option>
+				</select>
+				<input type="submit" value="Submit" >
+			</form>
+			<br>
+			
+						<?php
+		$konekcija=mysqli_connect("localhost","root","","data");
+		mysqli_set_charset($konekcija, "utf8");
+		if (mysqli_connect_errno())
+		  {
+		  echo "Došlo je do greške prilikom spajanja na bazu podataka: " . mysqli_connect_error(); //ispiši grešku ukoliko konekcija nije uspostavljena
+		  }
+
+	 if (empty($_POST['filterId'])) {
+
+	 	} else {
+			  switch ($_POST['filterId']) {
+	    case 1:
+	        $f1 = "ime";
+	        $f2 = $_POST['filter'];
+	        break;
+	    case 2:
+	        $f1 = "prezime";
+	      $f2 = $_POST['filter'];
+	        break;
+	    case 3:
+	        $f1 = "spol";
+	       $f2 = $_POST['filter'];
+	       break;
+	    case 4:
+	        $f1 = "datum";
+	      $f2 = $_POST['filter'];
+	      break;
+	    case 5:
+	        $f1 = "mob";
+	      $f2 = $_POST['filter'];
+	      break;
+	    case 6:
+	        $f1 = "adresa";
+	       $f2 = $_POST['filter'];
+	       break;
+	    case 7:
+	        $f1 = "grad";
+	    	$f2 = $_POST['filter'];
+	        break;
+		}
+	}
+
+	if (empty($_POST['filterId']))	{$result = mysqli_query($konekcija,"SELECT * FROM my_table LIMIT 20");}
+		else {$result = mysqli_query($konekcija,"SELECT * FROM my_table WHERE $f1 LIKE '%$f2%' LIMIT 20");}
+		while($row = mysqli_fetch_array($result))
+		  {
+
+		  	echo '<table style="border:1px solid black;">
+					<tr class="redak">
+					  <td class="table-left">'.$row['ime'].'</td>
+				
+					  <td class="table-left">'.$row['prezime'].'</td>
+				
+					  <td class="table-center"  style="width:50px;">'.$row['spol'].'</td>
+				
+					  <td class="table-center">'.$row['datum'].'</td>
+				
+					  <td class="table-left">'.$row['mob'].'</td>
+
+					  <td class="table-left" style="width:200px; padding-left: 20px">'.$row['adresa'].'</td>
+
+					  <td class="table-right" style="width:50px;">'.$row['grad'].'</td>
+					</tr>
+				 </table>';
+		  }
+		mysqli_close($konekcija);
+		?> 
+			</div>
+		</div>
+		<footer>
+			<span class="footer_text">COPYRIGHT ZKD, 2014</span>
+		</footer>
+	</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<?php
+session_start();
+
+if (!isset($_SESSION['user'])) {
+	header("Location:login.html");
+}
+
+?> 
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>ZKD j.d.o.o.</title>
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/grid.css" />
+		<link rel="stylesheet" href="css/normalize.css" />
+	</head>
+	<body>
+		<header>
+			<img class="logo" src="img/logo.png" alt="Zdravko Dren logo">
+			<div class="button_odjava">
+				<label><span class="label_color"><?php echo $_SESSION['user']; ?></span></label>
+						<a href="logout.php"><button>ODJAVA</button></a>
+			</div>
+			</header>
+					<nav>
+			<ul class="menu">
+				<li><a href="index.html">Početna</a></li>
+				<li><a href="indexpopis.html">Popis</a></li>
+				<li><a href="indexunos.html">Unos</a></li>
+				<li><a href="trazi.html">isp</a></li>
+				<li><a href="isp2.html">Pacijenti PHP</a></li>
+				<li><a href="isp3.html">Pacijenti JS</a></li>
+				<li><a href="forma.html">PDF</a></li>
+				<li><a href="indexunosmobile.html">Unos mobile</a></li>
+			</ul>
+		</nav>
+		<div class="content">
+		<div class="content_info">
+				<form method="post" action="indexunos.html">
+					Ime: <input type="text" name="ime" maxlength="50"/> Prezime: <input type="text" name="prezime" maxlength="50"/>
+					<br><br>
+					Spol: <input type="radio" name="sex" value="M"/>M <input type="radio" name="sex" value="Ž"/>Ž
+					<br><br>
+					Datum rođenja: <input style="width: 55px;" type="text" name="dan" maxlenght="2" placeholder="Dan"/> <input style="width: 55px;" type="text" name="mjesec" maxlenght="2" placeholder="Mjesec"/> <input style="width: 55px;" type="text" name="godina" maxlenght="4" placeholder="Godina"/>
+					<br><br>
+					Mjesto rođenja: <input type="text" name="mjesto_rodenja" maxlength="50"/>
+					<br><br>
+					Adresa i mjesto stanovanja: <input type="text" name="adresa" maxlength="50"/>
+					<br><br>
+					Krvna grupa:
+					<select name="filterId">
+					<option value="A" name="a">A</option>
+					<option value="B" name="b">B</option>
+					<option value="AB" name="ab">AB</option>
+					<option value="0" name="0">0</option>
+					</select>
+					<select name="filterId2">
+					<option value="+" name="pos">+ (pos)</option>
+					<option value="-" name="neg">- (neg)</option>
+					</select>
+					<br><br>
+					Imate li prijašnjih medicinskih tegoba: <input id="tegoba_da" type="radio" name="tegoba" value="da" onclick="javascript:yesnoCheck();"/>DA <input type="radio" name="tegoba" value="ne" onclick="javascript:yesnoCheck();"/>NE
+					<input id="opis_tegobe" type="text" name="opis_tegobe" style="display:none" placeholder="Opišite tegobe"/>
+					<br><br>
+					Jeste li alergični na ljekove:  <input id="a_da" type="radio" name="a" value="da" onclick="javascript:yesnoCheck1();"/>DA <input type="radio" name="a" value="ne" onclick="javascript:yesnoCheck1();"/>NE <input type="radio" name="a" value="neznam" onclick="javascript:yesnoCheck1();"/>NE ZNAM
+					<input id="a_tegobe" type="text" name="alergije" style="display:none" placeholder="Na koje ljekove ste alergični?"/>
+					<br><br>
+					<input type="submit" name="submit" value="Submit"/>
+					</form>
+			</div>
+		<?php
+			$konekcija=mysqli_connect("localhost","root","","data");
+			mysqli_set_charset($konekcija, "utf8");
+			if (mysqli_connect_errno())
+			  {
+			  echo "Došlo je do greške prilikom spajanja na bazu podataka: " . mysqli_connect_error(); //ispiši grešku ukoliko konekcija nije uspostavljena
+			  }
+	if (!isset($_POST['submit'])) {
+
+	} else {
+	 		  $f1 = $_POST['ime'];
+			  $f2 = $_POST['prezime'];
+			  $f3 = $_POST['sex'];
+			  $f4 = $_POST['dan'].'.'.$_POST['mjesec'].'.'.$_POST['godina'];
+			  $f5 = $_POST['mjesto_rodenja'];
+			  $f6 = $_POST['adresa'];
+			  $f7 = $_POST['filterId'].$_POST['filterId2'];
+			  $f8 = $_POST['tegoba'];
+			  $f9 = $_POST['opis_tegobe'];
+			  $f10 = $_POST['a'];
+			  $f11 = $_POST['alergije'];
+
+				  if (empty($_POST['ime']||$_POST['prezime']||$_POST['sex']||$_POST['dan']||$_POST['mjesec']||$_POST['godina']||$_POST['mjesto_rodenja']||$_POST['adresa']||$_POST['tegoba']||$_POST['a']))
+				  	{ echo "Niste unijeli kljucne podatke!"; }
+				  else {
+				  	$result = mysqli_query($konekcija,"INSERT INTO podaci(ime, prezime, spol, dat_rodjenja, mj_rodjenja, adresa, krvna_grupa, tegobe, opis_tegobe, alergije, opis_alergije) VALUES('$f1','$f2','$f3','$f4','$f5','$f6','$f7','$f8','$f9','$f10','$f11')");
+				  	echo "USPJESNO STE UPISANI!";
+				    }
+		}
+			mysqli_close($konekcija);
+		?> 
+		</div>
+		<footer>
+			<span class="footer_text">COPYRIGHT ZKD, 2014</span>
+		</footer>
+	</body>
+</html>
+
+<script type="text/javascript">
+
+function yesnoCheck() {
+    if (document.getElementById('tegoba_da').checked) {
+        document.getElementById('opis_tegobe').style.display = 'block';
+    }
+    else document.getElementById('opis_tegobe').style.display = 'none';
+
+}
+
+
+</script>
+
+<script type="text/javascript">
+function yesnoCheck1() {
+    if (document.getElementById('a_da').checked) {
+        document.getElementById('a_tegobe').style.display = 'block';
+    }
+    else document.getElementById('a_tegobe').style.display = 'none';
+
+}
+
+
+</script>

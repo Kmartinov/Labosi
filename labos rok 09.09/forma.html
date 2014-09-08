@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<?php
+session_start();
+
+if (!isset($_SESSION['user'])) {
+	header("Location:login.html");
+}
+
+?> 
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>ZKD j.d.o.o.</title>
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/grid.css" />
+		<link rel="stylesheet" href="css/normalize.css" />
+	</head>
+	<body>
+		<header>
+			<img class="logo" src="img/logo.png" alt="Zdravko Dren logo">
+			<div class="button_odjava">
+				<label><span class="label_color"><?php echo $_SESSION['user']; ?></span></label>
+						<a href="logout.php"><button>ODJAVA</button></a>
+			</div>
+		</header>
+		<nav>
+			<ul class="menu">
+				<li><a href="index.html">Početna</a></li>
+				<li><a href="indexpopis.html">Popis</a></li>
+				<li><a href="indexunos.html">Unos</a></li>
+				<li><a href="trazi.html">isp</a></li>
+				<li><a href="isp2.html">Pacijenti PHP</a></li>
+				<li><a href="isp3.html">Pacijenti JS</a></li>
+				<li><a href="forma.html">PDF</a></li>
+				<li><a href="indexunosmobile.html">Unos mobile</a></li>
+			</ul>
+		</nav>
+		<div class="content">
+			<form action="pdfgenerate.php" method="post">
+            
+
+          <label for="ime">Ime:</label></br>
+          <input id="ime" type="text" name="name" /></br></br>
+		  
+          <label for="prezime">Prezime:</label></br>
+          <input id="prezime" type="text" name="lastname" /></br></br>
+		  
+		  
+		  <label for="grupa">Krvna grupa:</label></br></br>
+		  <input id="grupa" type="radio" name="krv" value="A"/>A
+          <input id="grupa" type="radio" name="krv" value="B"/>B
+		  <input id="grupa" type="radio" name="krv" value="AB"/>AB
+		  <input id="grupa" type="radio" name="krv" value="0"/>0</br>
+		  <input id="grupa+" type="radio" name="krv+" value="+"/>+
+		  <input id="grupa-" type="radio" name="krv+" value="-"/>-</br></br>
+		  
+		  
+          <p><input type="submit" value="Pošalji" class="InputButton" /></p>
+		  
+        </form> 
+		</div>
+		<footer>
+			<span class="footer_text">COPYRIGHT ZKD, 2014</span>
+		</footer>
+	</body>
+</html>
